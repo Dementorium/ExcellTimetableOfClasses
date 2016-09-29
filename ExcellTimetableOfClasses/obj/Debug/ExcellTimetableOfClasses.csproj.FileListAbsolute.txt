@@ -1,0 +1,10 @@
+c:\users\kalinin_i\documents\visual studio 2015\Projects\ExcellTimetableOfClasses\ExcellTimetableOfClasses\bin\Debug\ExcellTimetableOfClasses.exe.config
+C:\Projects\ExcellTimetableOfClasses\ExcellTimetableOfClasses\bin\Debug\ExcellTimetableOfClasses.exe.config
+C:\Projects\ExcellTimetableOfClasses\ExcellTimetableOfClasses\bin\Debug\ExcellTimetableOfClasses.exe
+C:\Projects\ExcellTimetableOfClasses\ExcellTimetableOfClasses\bin\Debug\ExcellTimetableOfClasses.pdb
+C:\Projects\ExcellTimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.csprojResolveAssemblyReference.cache
+C:\Projects\ExcellTimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.Form1.resources
+C:\Projects\ExcellTimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.Properties.Resources.resources
+C:\Projects\ExcellTimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.csproj.GenerateResource.Cache
+C:\Projects\ExcellTimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.exe
+C:\Projects\ExcellTimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.pdb
