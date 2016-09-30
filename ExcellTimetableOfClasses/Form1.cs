@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -271,118 +272,7 @@ namespace ExcellTimetableOfClasses
             Close();
         }
 
-        private void btnWikiStyle_Click2(object sender, EventArgs e)
-        {
-            if (txtNewFile.Text == "")
-                if (openFileDialog1.ShowDialog() != DialogResult.OK)
-                    return;
-                else
-                    txtNewFile.Text = openFileDialog1.FileName; //новый
-
-            tabControl1.SelectedTab = tabPage2;
-            richTextBox2.Clear();
-            char[] charsToTrim = { '*', ' ', '_', '\n' };
-            char[] charsToTrim2 = { '*', ' ', '_' };
-            char[] ColumnsToSplit = { 'A', 'B', 'E', 'F' };
-
-            //int[] Indexes = { };
-            string group = "";
-            int CountToExit = 0;
-            string[] ArrayOfChars = { };
-            //-----------------------------------------------------
-            Excel.Workbook ObjWorkBook = ObjExcel.Workbooks.Open(openFileDialog1.FileName, 0, true, 5, "", "", false, Excel.XlPlatform.xlWindows, "", false, false, 0, true, false, false);
-            var ObjWorkSheet = (Excel.Worksheet)ObjWorkBook.Sheets[numEdt.Value];
-            Excel.Worksheet sheet = ObjExcel.ActiveWorkbook.ActiveSheet;
-            progressBar1.Value = 0;
-
-            var ResultCell = "";
-            for (int i = 7; i < 200; i++)
-            {
-                progressBar1.PerformStep();
-                var IsGroup = (ObjWorkSheet.Range["A" + i.ToString(), "A" + i.ToString()].Text.ToString().Trim(charsToTrim) != ""
-                               && ObjWorkSheet.Range["B" + i.ToString(), "B" + i.ToString()].Text.ToString().Trim(charsToTrim) == ""
-                               && ObjWorkSheet.Range["C" + i.ToString(), "C" + i.ToString()].Text.ToString().Trim(charsToTrim) == ""
-                               && group != ObjWorkSheet.Range["A" + i.ToString(), "A" + i.ToString()].Text.ToString().Trim(charsToTrim));
-                if (IsGroup || CountToExit > 9)
-                {
-                    richTextBox2.Text = richTextBox2.Text + group + "";
-                    group = "{{Hider|" + ObjWorkSheet.Range["A" + i.ToString(), "A" + i.ToString()].Text.ToString().Trim(charsToTrim) + "\n" + "{|\n|-\n";
-
-                    var words = ResultCell.Trim(charsToTrim2).Split('_');
-                    if (words.Length > 1)
-                    {
-                        IEnumerable<string> query = from word in words
-                                                    orderby word.Substring(4, 2), word.Substring(1, 2), word.Substring(8, 2)
-                                                    select word;
-
-                        foreach (string str in query)
-                            richTextBox2.Text = richTextBox2.Text + "|-\n" + str + "";
-                        richTextBox2.Text = richTextBox2.Text + "|}\n}}\n";
-                    }
-                    ResultCell = "";
-
-                    if (IsGroup)
-                        continue;
-                }
-                if (ObjWorkSheet.Range['A' + i.ToString(), 'A' + i.ToString()].Text.ToString() == "Число")
-                    continue;
-                if (CountToExit > 9)
-                {
-                    break;
-                }
-                if (ObjWorkSheet.Range["A" + i.ToString(), "A" + i.ToString()].Text.ToString().Trim(charsToTrim) == ""
-                     && ObjWorkSheet.Range["B" + i.ToString(), "B" + i.ToString()].Text.ToString().Trim(charsToTrim) == ""
-                     && ObjWorkSheet.Range["C" + i.ToString(), "C" + i.ToString()].Text.ToString().Trim(charsToTrim) == "")
-                {
-                    CountToExit++;
-                    if (CountToExit > 5)
-                        progressBar1.Value = 180 + (2 * CountToExit);
-                    continue;
-                }
-
-                var CellA = ObjWorkSheet.Range['A' + i.ToString(), 'A' + i.ToString()].Text.ToString().Trim(charsToTrim);
-                var NumOfAEnter = CellA.Split('\n').Length;
-
-                /*Всякие проверки окончены. Погнали*/
-                for (var j = 0; j < NumOfAEnter; j++)
-                {
-                    foreach (var d in alpha)
-                    {
-                        var Cell = ObjWorkSheet.Range[d + i.ToString(), d + i.ToString()].Text.ToString().Trim(charsToTrim);
-                        ArrayOfChars = Cell.Split('\n');
-
-                        if (ArrayOfChars.Length == NumOfAEnter && ColumnsToSplit.Contains(d))
-                        {
-                            var Cell1 = ArrayOfChars[j].Replace("//", "/").Replace("_", "/").Trim(charsToTrim);
-                            if (d == 'B' && Cell1.Length > 12)
-                            {
-                                ResultCell = ResultCell + '|' + Cell1.Substring(Cell1.Length - 11) + "\n";
-                            }
-                            else
-                            {
-                                ResultCell = ResultCell + '|' + Cell1 + "\n";
-                            }
-                        }
-                        else
-                            ResultCell = ResultCell + '|' +
-                                         Cell.Replace("\n", "/").Replace("//", "/").Replace("_", "/").Trim(charsToTrim) +
-                                         "\n";
-
-                        /*закончили формирование строки*/
-                        //ResultCell = ResultCell + "_";
-                    }
-                    ResultCell = ResultCell + "_";
-                    //richTextBox2.Text = richTextBox2.Text + ResultCell;
-                    //ResultCell = "";
-                }
-                /*ArrayOfResult[z].DateIndex = 0;
-                ArrayOfResult[z].Row = ArrayOfResult[z].Row + ResultCell;
-                t++;*/
-
-            }
-        }
-
-        private void btnWikiStyle_Click(object sender, EventArgs e)
+         private void btnWikiStyle_Click(object sender, EventArgs e)
         {
             if (txtNewFile.Text == "")
                 if (openFileDialog1.ShowDialog() != DialogResult.OK)
@@ -394,13 +284,38 @@ namespace ExcellTimetableOfClasses
             richTextBox2.Clear();
 
             var dt = GetDataFromXls(txtNewFile.Text);
+            var toOut = "";
+            var group = "";
+
+            foreach (DataRow row in dt.Rows)
+            {
+                if (group != row["Group"].ToString())
+                {
+                    group = row["Group"].ToString();
+                    if (string.IsNullOrEmpty(toOut))
+                        toOut = toOut + "\n{{Hider|" + group + "\n{|\n|-";
+                    else
+                        toOut = toOut + "\n|}\n}}\n{{Hider|" + group + "\n{|\n|-";
+                }
+
+                toOut = toOut + "\n|-" + (chbDate.Checked ? "\n|" + row["Date"].ToString() : "")
+                + (chbTime.Checked ? "\n|" + row["Time"].ToString() : "")
+                + (chbSubj.Checked ? "\n|" + row["Subject"].ToString() : "")
+                + (chbTeacher.Checked ? "\n|" + row["Teacher"].ToString() : "")
+                + (chbClass.Checked ? "\n|" + row["Room"].ToString() : "")
+                + (chbOther.Checked ? "\n|" + row["Note"].ToString() : "");
+            }
+            richTextBox2.Text = toOut + "\n|}\n}}";
+
             //return;
         }
 
         public DataTable GetDataFromXls(string fileName)
         {
             char[] charsToTrim = { '*', ' ', '_', '\n' };
+            char[] charsToTrim2 = { '*', ' ', '_', '\n', '-', '.', '-', ':' };
             char[] columnsToSplit = { 'A', 'B', 'E', 'F' };
+            Regex pattern = new Regex("[* _\n-.-:]");
 
             //int[] Indexes = { };
             string group = "";
@@ -414,6 +329,7 @@ namespace ExcellTimetableOfClasses
             resultTable.Columns.Add("Teacher", typeof(string));
             resultTable.Columns.Add("Room", typeof(string));
             resultTable.Columns.Add("Note", typeof(string));
+            resultTable.Columns.Add("SortColumn", typeof(string));
             //-----------------------------------------------------
             //var e;
             var objWorkSheet = new Excel.Worksheet();
@@ -429,7 +345,7 @@ namespace ExcellTimetableOfClasses
             progressBar1.Value = 0;
 
             //var ResultCell = "";
-            for (int i = 4; i < 200; i++)
+            for (int i = 4; i < 120; i++)
             {
                 progressBar1.PerformStep();
                 var IsGroup = objWorkSheet.Range["A" + i, "A" + i].Text.ToString().Trim(charsToTrim) != ""
@@ -438,23 +354,8 @@ namespace ExcellTimetableOfClasses
                                && group != objWorkSheet.Range["A" + i, "A" + i].Text.ToString().Trim(charsToTrim);
                 if (IsGroup || countToExit > 9)
                 {
-                    richTextBox2.Text = richTextBox2.Text + group;
-                    //if (richTextBox2.Text.Length > 0)
-                    //    group = "\nГруппа " + objWorkSheet.Range["A" + i, "A" + i].Text.ToString().Trim(charsToTrim) + '\n';
-                    //else
+                    //richTextBox2.Text = richTextBox2.Text + group;
                     group = "Группа " + objWorkSheet.Range["A" + i, "A" + i].Text.ToString().Trim(charsToTrim);
-
-
-                    /*var words = ResultCell.Trim(charsToTrim).Split('_');
-                    if (words.Length > 1)
-                    {
-                        IEnumerable<string> query = from word in words
-                                                    orderby word.Substring(3, 2), word.Substring(0, 2), word.Substring(6, 2)
-                                                    select word;
-                        foreach (string str in query)
-                            richTextBox2.Text = richTextBox2.Text + str + "\n";
-                    }*/
-                    //ResultCell = "";
                     if (IsGroup)
                         continue;
                 }
@@ -475,8 +376,13 @@ namespace ExcellTimetableOfClasses
                 }
 
                 var CellA = objWorkSheet.Range["A" + i, "A" + i].Text.ToString().Trim(charsToTrim);
-                var NumOfAEnter = CellA.Split('\n');
-                if (NumOfAEnter.Length == 1)
+                var CellB = objWorkSheet.Range["B" + i, "B" + i].Text.ToString().Trim(charsToTrim);
+                var CellE = objWorkSheet.Range["E" + i, "E" + i].Text.ToString().Trim(charsToTrim);
+                var CellAArr = objWorkSheet.Range["A" + i, "A" + i].Text.ToString().Trim(charsToTrim).Split('\n');
+                var CellBArr = objWorkSheet.Range["B" + i, "B" + i].Text.ToString().Trim(charsToTrim).Split('\n');
+                var CellEArr = objWorkSheet.Range["E" + i, "E" + i].Text.ToString().Trim(charsToTrim).Split('\n');
+
+                if (CellAArr.Length == 1)
                 {
                     var row = resultTable.NewRow();
                     row["Group"] = group;
@@ -486,40 +392,33 @@ namespace ExcellTimetableOfClasses
                     row["Teacher"] = objWorkSheet.Range["D" + i, "D" + i].Text.ToString().Trim(charsToTrim);
                     row["Room"] = objWorkSheet.Range["E" + i, "E" + i].Text.ToString().Trim(charsToTrim);
                     row["Note"] = objWorkSheet.Range["F" + i, "F" + i].Text.ToString().Trim(charsToTrim);
+                    var sort = row["Group"].ToString().Remove(0, 7).Trim(charsToTrim2) + '.' + row["Date"].ToString().Split('.')[1] + row["Date"].ToString().Split('.')[0] + "_" + row["Time"].ToString().Trim(charsToTrim2);
+                    row["SortColumn"] = pattern.Replace(sort, "");
+
                     resultTable.Rows.Add(row);
                 }
                 else
-                    for (var j = 0; j < NumOfAEnter.Length; j++)
+                {
+                    for (var j = 0; j < CellAArr.Length; j++)
                     {
-                        foreach (var d in alpha)
-                        {
-
-                            var Cell = objWorkSheet.Range[d + i, d + i].Text.ToString().Trim(charsToTrim);
-                            arrayOfChars = Cell.Split('\n');
-
-                            /*if (arrayOfChars.Length == NumOfAEnter && columnsToSplit.Contains(d))
-                            {
-                                var Cell1 = arrayOfChars[j].Replace("//", "/").Replace("_", "/").Trim(charsToTrim);
-                                if (d == 'B' && Cell1.Length > 12)
-                                {
-                                    ResultCell = ResultCell + Cell1.Substring(Cell1.Length - 11) + " ";
-                                }
-                                else
-                                {
-                                    ResultCell = ResultCell + Cell1 + " ";
-                                }
-                            }
-                            else
-                                ResultCell = ResultCell +
-                                             Cell.Replace("\n", "/").Replace("//", "/").Replace("_", "/").Trim(charsToTrim) +
-                                             " ";*/
-
-                            //закончили формирование строки
-                        }
-                        //ResultCell = ResultCell + "_";
+                        var row = resultTable.NewRow();
+                        row["Group"] = group;
+                        row["Date"] = CellAArr[j];
+                        row["Time"] = (CellBArr.Length == CellAArr.Length ? CellBArr[j] : CellB);
+                        row["Subject"] = objWorkSheet.Range["C" + i, "C" + i].Text.ToString().Trim(charsToTrim);
+                        row["Teacher"] = objWorkSheet.Range["D" + i, "D" + i].Text.ToString().Trim(charsToTrim);
+                        row["Room"] = (CellEArr.Length == CellAArr.Length ? CellEArr[j] : CellE);
+                        row["Note"] = objWorkSheet.Range["F" + i, "F" + i].Text.ToString().Trim(charsToTrim);
+                        var sort = row["Group"].ToString().Remove(0, 7).Trim(charsToTrim2) + '.' + row["Date"].ToString().Split('.')[1] + row["Date"].ToString().Split('.')[0] + "_" + row["Time"].ToString().Trim(charsToTrim2);
+                        row["SortColumn"] = pattern.Replace(sort, "");
+                        resultTable.Rows.Add(row);
                     }
+                }
             }
-            return null;
+            //DataView dv = resultTable.DefaultView;
+            resultTable.DefaultView.Sort = "SortColumn asc";
+            DataTable sortedDT = resultTable.DefaultView.ToTable();
+            return sortedDT;
         }
     }
 }

@@ -8,3 +8,12 @@ C:\Projects\ExcellTimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTi
 C:\Projects\ExcellTimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.csproj.GenerateResource.Cache
 C:\Projects\ExcellTimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.exe
 C:\Projects\ExcellTimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.pdb
+C:\Projects\TimetableOfClasses\ExcellTimetableOfClasses\bin\Debug\ExcellTimetableOfClasses.exe.config
+C:\Projects\TimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.exe
+C:\Projects\TimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.pdb
+C:\Projects\TimetableOfClasses\ExcellTimetableOfClasses\bin\Debug\ExcellTimetableOfClasses.exe
+C:\Projects\TimetableOfClasses\ExcellTimetableOfClasses\bin\Debug\ExcellTimetableOfClasses.pdb
+C:\Projects\TimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.csprojResolveAssemblyReference.cache
+C:\Projects\TimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.Form1.resources
+C:\Projects\TimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.Properties.Resources.resources
+C:\Projects\TimetableOfClasses\ExcellTimetableOfClasses\obj\Debug\ExcellTimetableOfClasses.csproj.GenerateResource.Cache
