@@ -442,7 +442,7 @@ namespace ExcellTimetableOfClasses
                     //if (richTextBox2.Text.Length > 0)
                     //    group = "\nГруппа " + objWorkSheet.Range["A" + i, "A" + i].Text.ToString().Trim(charsToTrim) + '\n';
                     //else
-                    group = "Группа " + objWorkSheet.Range["A" + i, "A" + i].Text.ToString().Trim(charsToTrim) ;
+                    group = "Группа " + objWorkSheet.Range["A" + i, "A" + i].Text.ToString().Trim(charsToTrim);
 
 
                     /*var words = ResultCell.Trim(charsToTrim).Split('_');
@@ -458,7 +458,7 @@ namespace ExcellTimetableOfClasses
                     if (IsGroup)
                         continue;
                 }
-                if (objWorkSheet.Range['A' + i.ToString(), 'A' + i.ToString()].Text.ToString() == "Число")
+                if (objWorkSheet.Range["A" + i, "A" + i].Text.ToString() == "Число")
                     continue;
                 if (countToExit > 9)
                 {
@@ -474,38 +474,50 @@ namespace ExcellTimetableOfClasses
                     continue;
                 }
 
-                var CellA = objWorkSheet.Range['A' + i.ToString(), 'A' + i.ToString()].Text.ToString().Trim(charsToTrim);
-                var NumOfAEnter = CellA.Split('\n').Length;
-
-                //Всякие проверки окончены. Погнали
-                for (var j = 0; j < NumOfAEnter; j++)
+                var CellA = objWorkSheet.Range["A" + i, "A" + i].Text.ToString().Trim(charsToTrim);
+                var NumOfAEnter = CellA.Split('\n');
+                if (NumOfAEnter.Length == 1)
                 {
-                    foreach (var d in alpha)
+                    var row = resultTable.NewRow();
+                    row["Group"] = group;
+                    row["Date"] = objWorkSheet.Range["A" + i, "A" + i].Text.ToString().Trim(charsToTrim);
+                    row["Time"] = objWorkSheet.Range["B" + i, "B" + i].Text.ToString().Trim(charsToTrim);
+                    row["Subject"] = objWorkSheet.Range["C" + i, "C" + i].Text.ToString().Trim(charsToTrim);
+                    row["Teacher"] = objWorkSheet.Range["D" + i, "D" + i].Text.ToString().Trim(charsToTrim);
+                    row["Room"] = objWorkSheet.Range["E" + i, "E" + i].Text.ToString().Trim(charsToTrim);
+                    row["Note"] = objWorkSheet.Range["F" + i, "F" + i].Text.ToString().Trim(charsToTrim);
+                    resultTable.Rows.Add(row);
+                }
+                else
+                    for (var j = 0; j < NumOfAEnter.Length; j++)
                     {
-                        var Cell = objWorkSheet.Range[d + i.ToString(), d + i.ToString()].Text.ToString().Trim(charsToTrim);
-                        arrayOfChars = Cell.Split('\n');
-
-                        /*if (arrayOfChars.Length == NumOfAEnter && columnsToSplit.Contains(d))
+                        foreach (var d in alpha)
                         {
-                            var Cell1 = arrayOfChars[j].Replace("//", "/").Replace("_", "/").Trim(charsToTrim);
-                            if (d == 'B' && Cell1.Length > 12)
+
+                            var Cell = objWorkSheet.Range[d + i, d + i].Text.ToString().Trim(charsToTrim);
+                            arrayOfChars = Cell.Split('\n');
+
+                            /*if (arrayOfChars.Length == NumOfAEnter && columnsToSplit.Contains(d))
                             {
-                                ResultCell = ResultCell + Cell1.Substring(Cell1.Length - 11) + " ";
+                                var Cell1 = arrayOfChars[j].Replace("//", "/").Replace("_", "/").Trim(charsToTrim);
+                                if (d == 'B' && Cell1.Length > 12)
+                                {
+                                    ResultCell = ResultCell + Cell1.Substring(Cell1.Length - 11) + " ";
+                                }
+                                else
+                                {
+                                    ResultCell = ResultCell + Cell1 + " ";
+                                }
                             }
                             else
-                            {
-                                ResultCell = ResultCell + Cell1 + " ";
-                            }
-                        }
-                        else
-                            ResultCell = ResultCell +
-                                         Cell.Replace("\n", "/").Replace("//", "/").Replace("_", "/").Trim(charsToTrim) +
-                                         " ";*/
+                                ResultCell = ResultCell +
+                                             Cell.Replace("\n", "/").Replace("//", "/").Replace("_", "/").Trim(charsToTrim) +
+                                             " ";*/
 
-                        //закончили формирование строки
+                            //закончили формирование строки
+                        }
+                        //ResultCell = ResultCell + "_";
                     }
-                    //ResultCell = ResultCell + "_";
-                }
             }
             return null;
         }
