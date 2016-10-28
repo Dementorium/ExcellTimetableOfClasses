@@ -60,6 +60,7 @@
             this.chbTeacher = new System.Windows.Forms.CheckBox();
             this.chbClass = new System.Windows.Forms.CheckBox();
             this.chbOther = new System.Windows.Forms.CheckBox();
+            this.bntClearShedule = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numEdt)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -82,9 +83,9 @@
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(872, 621);
+            this.btnClose.Location = new System.Drawing.Point(849, 621);
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(150, 49);
+            this.btnClose.Size = new System.Drawing.Size(173, 49);
             this.btnClose.TabIndex = 1;
             this.btnClose.Tag = "2";
             this.btnClose.Text = "Выход";
@@ -308,6 +309,7 @@
             this.UploadToGCal.TabIndex = 19;
             this.UploadToGCal.Text = "Экспортировать в формате календаря";
             this.UploadToGCal.UseVisualStyleBackColor = true;
+            this.UploadToGCal.Click += new System.EventHandler(this.UploadToGCal_Click);
             // 
             // chbDate
             // 
@@ -379,12 +381,23 @@
             this.chbOther.Text = "Примечание";
             this.chbOther.UseVisualStyleBackColor = true;
             // 
+            // bntClearShedule
+            // 
+            this.bntClearShedule.Location = new System.Drawing.Point(660, 621);
+            this.bntClearShedule.Name = "bntClearShedule";
+            this.bntClearShedule.Size = new System.Drawing.Size(173, 49);
+            this.bntClearShedule.TabIndex = 26;
+            this.bntClearShedule.Text = "Почистить расписание";
+            this.bntClearShedule.UseVisualStyleBackColor = true;
+            this.bntClearShedule.Click += new System.EventHandler(this.bntClearShedule_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.ClientSize = new System.Drawing.Size(1034, 682);
+            this.Controls.Add(this.bntClearShedule);
             this.Controls.Add(this.chbOther);
             this.Controls.Add(this.chbClass);
             this.Controls.Add(this.chbTeacher);
@@ -455,6 +468,7 @@
 		private System.Windows.Forms.CheckBox chbTeacher;
 		private System.Windows.Forms.CheckBox chbClass;
 		private System.Windows.Forms.CheckBox chbOther;
-	}
+        private System.Windows.Forms.Button bntClearShedule;
+    }
 }
 
