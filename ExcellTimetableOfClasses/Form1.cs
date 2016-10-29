@@ -403,6 +403,7 @@ namespace ExcellTimetableOfClasses
             };
 
             EventsResource.InsertRequest request = service.Events.Insert(newEvent, CalendarId);
+            request.SendNotifications = true;
             Event createdEvent = request.Execute();
             richTextBox2.Text = richTextBox2.Text + "Event '" + createdEvent.Summary + "' created: " + createdEvent.HtmlLink + '\n';
         }
@@ -456,6 +457,7 @@ namespace ExcellTimetableOfClasses
             resultTable.Columns.Add("Room", typeof(string));
             resultTable.Columns.Add("Note", typeof(string));
             resultTable.Columns.Add("SortColumn", typeof(string));
+            resultTable.Columns.Add("SortDate", typeof(Int32));
             //-----------------------------------------------------
             //var e;
             var objWorkSheet = new Excel.Worksheet();
@@ -520,6 +522,7 @@ namespace ExcellTimetableOfClasses
                     row["Note"] = objWorkSheet.Range["F" + i, "F" + i].Text.ToString().Trim(charsToTrim);
                     var sort = row["Group"].ToString().Remove(0, 7).Trim(charsToTrim2) + '.' + row["Date"].ToString().Split('.')[1] + row["Date"].ToString().Split('.')[0] + "_" + row["Time"].ToString().Trim(charsToTrim2);
                     row["SortColumn"] = pattern.Replace(sort, "");
+                    row["SortDate"] = row["Date"].ToString().Split('.')[1].Trim() + row["Date"].ToString().Split('.')[0].Trim(); ;
 
                     resultTable.Rows.Add(row);
                 }
@@ -537,6 +540,7 @@ namespace ExcellTimetableOfClasses
                         row["Note"] = objWorkSheet.Range["F" + i, "F" + i].Text.ToString().Trim(charsToTrim);
                         var sort = row["Group"].ToString().Remove(0, 7).Trim(charsToTrim2) + '.' + row["Date"].ToString().Split('.')[1] + row["Date"].ToString().Split('.')[0] + "_" + row["Time"].ToString().Trim(charsToTrim2);
                         row["SortColumn"] = pattern.Replace(sort, "");
+                        row["SortDate"] = row["Date"].ToString().Split('.')[1].Trim() + row["Date"].ToString().Split('.')[0].Trim(); ;
                         resultTable.Rows.Add(row);
                     }
                 }
@@ -568,6 +572,8 @@ namespace ExcellTimetableOfClasses
             var vtimails = new EventAttendee[]
             {
                 new EventAttendee() {Email = "ww_dementor@mail.ru"},
+                new EventAttendee() {Email = "wwdementor@gmail.com"},
+                new EventAttendee() {Email = "sovsemvnetela@gmail.com"},
                 //new EventAttendee() {Email = "575509@gmail.com"},
                 //new EventAttendee() {Email = "blackmorr@yandex.ru"},
                 //new EventAttendee() {Email = "gureev.borislav@bk.ru"},
@@ -590,7 +596,7 @@ namespace ExcellTimetableOfClasses
 
             var newDt = GetDataFromXls(txtNewFile.Text);
             var vtiGroupName = "Группа 13ВТИ-2ЗБ-010";
-            var myGroup = newDt.Select("Group = '" + vtiGroupName + "'");
+            var myGroup = newDt.Select("Group = '" + vtiGroupName + "' and SortDate >= " + DateTime.Now.ToString("MMdd"));
             ClearCalendarEventByGroupName(vtiGroupName);
             foreach (DataRow newRow in myGroup)
             {
@@ -619,6 +625,7 @@ namespace ExcellTimetableOfClasses
                                + "T" + newRow["Time"].ToString().Split('-')[1];
                 AddNewCalendarEvent(newRow["Subject"].ToString(), newRow["Teacher"] + " (" + newRow["Note"] + ")", startdt, enddt, newRow["Room"].ToString(), newRow["Teacher"].ToString(), newRow["Group"].ToString(), vtimails);
             }
+            richTextBox2.Text = richTextBox2.Text + "\n\nDone!";
         }
 
         private void bntClearShedule_Click(object sender, EventArgs e)
