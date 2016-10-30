@@ -347,6 +347,7 @@ namespace ExcellTimetableOfClasses
                         richTextBox2.Text = richTextBox2.Text + "Delete event '" + eventItem.Summary + "'\n";
                         EventsResource.DeleteRequest request3 = service.Events.Delete(CalendarId, eventItem.Id);
                         request3.Execute();
+                        Thread.Sleep(1000);
                     }
                 }
             }
@@ -383,12 +384,12 @@ namespace ExcellTimetableOfClasses
                 },
                 ExtendedProperties = exProp,
                 //Recurrence = new String[] { "RRULE:FREQ=DAILY;COUNT=2" },
-                Organizer = new Event.OrganizerData()
+                /*Organizer = new Event.OrganizerData()
                 {
                     DisplayName = teacher,
                     Email = teacher,
                     Self = false
-                },
+                },*/
                 Attendees = mails
                 ,
                 Reminders = new Event.RemindersData()
@@ -399,13 +400,15 @@ namespace ExcellTimetableOfClasses
                         new EventReminder() { Method = "email", Minutes = 1 * 60 },
                         //new EventReminder() { Method = "sms", Minutes = 10 },
                     }
-                }
+                },
+                
             };
 
             EventsResource.InsertRequest request = service.Events.Insert(newEvent, CalendarId);
             request.SendNotifications = true;
             Event createdEvent = request.Execute();
             richTextBox2.Text = richTextBox2.Text + "Event '" + createdEvent.Summary + "' created: " + createdEvent.HtmlLink + '\n';
+            Thread.Sleep(1000);
         }
 
         private void ClearCalendarEventsByDatetime(CalendarService service, string startDate, string endDate, string group)
@@ -571,9 +574,11 @@ namespace ExcellTimetableOfClasses
 
             var vtimails = new EventAttendee[]
             {
-                new EventAttendee() {Email = "ww_dementor@mail.ru"},
                 new EventAttendee() {Email = "wwdementor@gmail.com"},
                 new EventAttendee() {Email = "sovsemvnetela@gmail.com"},
+                new EventAttendee() {Email = "ivt.mati2015@gmail.com"},
+                
+                //new EventAttendee() {Email = "ww_dementor@mail.ru;"},
                 //new EventAttendee() {Email = "575509@gmail.com"},
                 //new EventAttendee() {Email = "blackmorr@yandex.ru"},
                 //new EventAttendee() {Email = "gureev.borislav@bk.ru"},
